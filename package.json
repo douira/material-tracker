@@ -1,7 +1,7 @@
 {
   "name": "material-tracker",
   "version": "1.0.0",
-  "description": "Tracks what thing are handed out and which of them come back again",
+  "description": "Tracks what things are handed out and which of them come back again",
   "main": "app.js",
   "scripts": {
     "start": "node ./bin/www"
