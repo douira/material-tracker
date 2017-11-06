@@ -90,3 +90,6 @@ typings/
 
 # don't publicly share credentials
 credentials.json
+
+# database files
+data

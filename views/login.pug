@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1 Login
+  h5.grey-text="#" + reason
+  br
+  p Paste your alphanumeric access code here to gain access. Do not loose your code; you'll have to find it somehow or talk to me if you do.
+  form#code-form(action="/" method="POST")
+    .input-field
+      input#code-input(type="text" name= "code" placeholder="paste code")
+    .center
+      a.btn-large#submit-btn(href="!#") Submit
+block scripts
+  script(src="/js/login.js")
