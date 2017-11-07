@@ -1,9 +1,51 @@
 extends layout
 
+block header
+  link(href="/css/indexStyle.css" rel="stylesheet")
+
 block content
   h1 Items
-  h3 Add a new Item
-    form()
-
+  h4 Add a new Item
+    form#add-item-form(action="/create" method="POST")
+      .input-field
+        input#add-item-field(type="text" name="name")
+        label(for="add-item-field") Name of the item to be added
+    a.btn#add-item-btn(href="#")
+      i.material-icons.left add
+      | Add Item
+  br
+  -
+    const actionIcons = [
+      "file_upload",
+      "input",
+      "delete"
+    ];
+  h4 All Items
+  ul
+    mixin action-btn-descr(icon, colors, text)
+      li
+        .btn-floating.item-action-btn-descr-mrg(href="#" class=colors): i.material-icons=icon
+        =text
+    +action-btn-descr(actionIcons[0], "out-btn amber", "Item given out")
+    +action-btn-descr(actionIcons[1], "in-btn green", "Item came back")
+    +action-btn-descr(actionIcons[2], "disable-btn red", "Disable/Remove this item from the list")
+  table.bordered
+    thead: tr
+      th Item
+      th # Out
+      th # In
+      th Actions
+    tbody
+      mixin action-btn(icon, type)
+        a.btn-floating.item-action-btn(href="#" class=type): i.material-icons=icon
+      each item in data
+        tr(class=item.disabled ? "grey-text" : "")
+          td: b=item.name
+          td=item.out
+          td=item.in
+          td
+            +action-btn(actionIcons[0], "out-btn amber item-action-btn-mrg")
+            +action-btn(actionIcons[1], "in-btn green item-action-btn-mrg " + (item.out <= item.in ? "disabled" : ""))
+            +action-btn(actionIcons[2], "disable-btn red")
 block scripts
-  script(scr="/js/interaction.js")
+  script(src="/js/interaction.js")

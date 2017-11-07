@@ -14,7 +14,7 @@ const credentials = require("../credentials.json");
 
 function issueError(res, status, msg, errorItself) {
   //prepend error text
-  msg = "error: " + msg;
+  msg = status + "error: " + msg;
 
   //log message to console
   console.error(msg);
@@ -30,7 +30,6 @@ function issueError(res, status, msg, errorItself) {
 
 //ANY all pages must have auth
 router.all("*", (req, res, next) => {
-  console.log(req.body);
   //if a post with the correct code was sent, put it in the session
   if (req.body.code) {
     if (req.body.code === credentials.code) {
@@ -78,7 +77,8 @@ router.post("/update", (req, res) => {
 
     //update in db
     items.updateOne({ name: req.body.name }, {
-      $add: adderSetObj
+      $add: adderSetObj,
+      $set: { disabled: false }
     }).then(data => {
       //check for ok response
       if (data) {
@@ -99,16 +99,34 @@ router.post("/create", (req, res) => {
   items.insertOne({
     name: req.body.name,
     in: 0,
-    out: 0
+    out: 0,
+    disabled: false
+  }).then(data => {
+    //check for ok response
+    if (data) {
+      res.redirect("/");
+    } else {
+      //didn't set, idk if this makes sense
+      issueError(res, 400, "problem inserting");
+    }
+  }, () => res.redirect("/"));
+});
+
+//POST disable item (not remove, only make grey)
+router.post("/disable", (req, res) => {
+  //update in db
+  items.updateOne({ name: req.body.name }, {
+    //set to be disabled
+    $set: { disabled: true }
   }).then(data => {
     //check for ok response
     if (data) {
       res.send("ok");
     } else {
       //didn't set, idk if this makes sense
-      issueError(res, 400, "problem inserting");
+      issueError(res, 400, "problem disabling");
     }
-  }, (err) => issueError(res, 500, "couldn't make item", err));
+  }, (err) => issueError(res, 500, "couldn't disable item", err));
 });
 
 //GET to logout
