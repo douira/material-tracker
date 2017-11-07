@@ -2,7 +2,22 @@ doctype html
 html
   head
     title= title
-    link(rel="stylesheet", href="/css/style.css")
+    link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css")
+    block header
   body
-    block content
+    .container
+      block content
+      br
+      .divider
+      footer
+        h5: a(href="/logout") Logout
+        p Copyright © douira 2017
+          - var year = new Date().getFullYear
+          if year > 2017
+            ="-" + year
+          |  -
+          a(href="https://github.com/douira/material-tracker")  Code On GitHub
+    script(src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js")
     block scripts

@@ -1,8 +1,65 @@
 extends layout
 
-block content
-  h1=title
-  a(href=authURL): h3 Click to auth
+block header
+  link(href="/css/indexStyle.css" rel="stylesheet")
 
+block content
+  h1 Item List
+  h4 Add a new Item
+    form#add-item-form(action="/create" method="POST")
+      .input-field
+        input#add-item-field(type="text" name="name")
+        label(for="add-item-field") Name of the item to be added
+    a.btn#add-item-btn(href="#")
+      i.material-icons.left add
+      | Add Item
+  br
+  -
+    const actionIcons = [
+      "file_upload",
+      "input",
+      ["delete", "restore"]
+    ];
+    function calcH(item) {
+      return 130 * Math.max(0, 12 - (item.out - item.in)) / 12;
+    }
+  h4 All Items
+  ul
+    mixin action-btn-descr(icon, colors, text)
+      li
+        .btn-floating.item-action-btn-descr-mrg(href="#" class=colors): i.material-icons=icon
+        =text
+    +action-btn-descr(actionIcons[0], "amber", "Item given out")
+    +action-btn-descr(actionIcons[1], "green", "Item came back")
+    +action-btn-descr(actionIcons[2][0], "red", "Disable/Remove this item from the list")
+    +action-btn-descr(actionIcons[2][1], "blue", "Put the item back on the list")
+  | Use the "Amount" field to specify how many items you dealt with if there was more than 1. Disabled items are removed after 3 hours if they don't have unreturned items.
+  table.bordered#less-row-space
+    thead: tr
+      th Item
+      th Out
+      th In
+      th Unreturned
+      th Actions
+    tbody
+      mixin action-btn(icon, type)
+        a.btn-floating.item-action-btn(href="#" class=type): i.material-icons=icon
+      each item in data
+        tr(class=item.disabled > 0 ? "grey-text" : "")
+          td.item-name: b=item.name
+          td=item.out
+          td=item.in
+          td(style=item.out ? "background-color: hsl(" + calcH(item) + ",80%,90%)" : ""): b=item.out - item.in
+          td
+            +action-btn(actionIcons[0], "out-btn amber item-action-btn-mrg")
+            +action-btn(actionIcons[1], "in-btn green item-action-btn-mrg " + (item.in >= item.out ? "disabled" : ""))
+            if item.disabled < 0
+              +action-btn(actionIcons[2][0], "disable-btn red")
+            else
+              +action-btn(actionIcons[2][1], "disable-btn blue")
+            =" "
+            .input-field.inline
+              input.amount-field(type="number")
+              label(for="amount-field") Amount
 block scripts
-  script(src="/js/index.js")
+  script(src="/js/interaction.js")

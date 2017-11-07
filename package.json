@@ -4,7 +4,7 @@
   "description": "Tracks what things are handed out and which of them come back again",
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "mongod --dbpath data & node ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -18,9 +18,12 @@
   "homepage": "https://github.com/douira/material-tracker#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "connect-mongo": "^2.0.0",
     "cookie-parser": "^1.4.3",
     "debug": "^2.6.9",
     "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "mongodb": "^2.2.33",
     "morgan": "^1.9.0",
     "pug": "^2.0.0-rc.4",
     "serve-favicon": "^2.4.5"
