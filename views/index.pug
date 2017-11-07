@@ -33,13 +33,13 @@ block content
     +action-btn-descr(actionIcons[1], "green", "Item came back")
     +action-btn-descr(actionIcons[2][0], "red", "Disable/Remove this item from the list")
     +action-btn-descr(actionIcons[2][1], "blue", "Put the item back on the list")
-  | Use the "Amount" field to specify how many items you dealt with if there was more than 1.
-  table.bordered
+  | Use the "Amount" field to specify how many items you dealt with if there was more than 1. Disabled items are removed after 3 hours if they don't have unreturned items.
+  table.bordered#less-row-space
     thead: tr
       th Item
-      th # Out
-      th # In
-      th # Unreturned
+      th Out
+      th In
+      th Unreturned
       th Actions
     tbody
       mixin action-btn(icon, type)

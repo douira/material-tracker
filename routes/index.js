@@ -3,10 +3,25 @@ const express = require("express");
 const router = express.Router();
 const databaseInterface = require("../lib/database");
 
+//removes completely returned disabled every half hour if odler than 3 hours
+function removeOldItems(items) {
+  //delete all that are disabled and their timer over the 3 hour threshold
+  items.deleteMany({
+    disabled: 1, //1 = is disabled
+    disableTime: { $lt: Date.now() - 1000 * 60 * 60 * 3 }, //must be older than 3h
+    $where: "obj.in >= obj.out"
+  });
+}
+
 //get collection of items from database
 let items;
 databaseInterface((collections) => {
+  //get items collection
   items = collections.items;
+
+  //run now and in regular intervals
+  removeOldItems(items);
+  setInterval(removeOldItems.bind(null, items), 1000 * 60 * 10); //every 10 minutes
 });
 
 //get code that needs to be inputted for login from credentials file
@@ -81,7 +96,7 @@ router.post("/update", (req, res) => {
     //update in db
     items.updateOne({ name: req.body.name }, {
       $inc: adderSetObj,
-      $set: { disabled: false }
+      $set: { disabled: -1 }
     }).then(data => {
       //check for ok response
       if (data) {
@@ -120,7 +135,8 @@ router.post("/disable", (req, res) => {
   //update in db
   items.updateOne({ name: req.body.name }, {
     //set to be disabled
-    $mul: { disabled: -1 }
+    $mul: { disabled: -1 },
+    $set: { disableTime: Date.now() }
   }).then(data => {
     //check for ok response
     if (data) {

@@ -5,3 +5,8 @@
 .item-action-btn-descr-mrg {
   margin: 0.3em 0.4em 0.3em 0em;
 }
+
+#less-row-space tbody td {
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
