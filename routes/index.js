@@ -55,6 +55,9 @@ function indexHandler(req, res) {
   items.find({}).toArray().then(data => {
     //if there was any data
     if (data) {
+      //order data by disabled state
+      data.sort((a, b) => a.disabled - b.disabled || a.name > b.name);
+
       //render data
       res.render("index", { data: data });
     } else {
@@ -77,7 +80,7 @@ router.post("/update", (req, res) => {
 
     //update in db
     items.updateOne({ name: req.body.name }, {
-      $add: adderSetObj,
+      $inc: adderSetObj,
       $set: { disabled: false }
     }).then(data => {
       //check for ok response
@@ -100,7 +103,7 @@ router.post("/create", (req, res) => {
     name: req.body.name,
     in: 0,
     out: 0,
-    disabled: false
+    disabled: -1
   }).then(data => {
     //check for ok response
     if (data) {
@@ -117,7 +120,7 @@ router.post("/disable", (req, res) => {
   //update in db
   items.updateOne({ name: req.body.name }, {
     //set to be disabled
-    $set: { disabled: true }
+    $mul: { disabled: -1 }
   }).then(data => {
     //check for ok response
     if (data) {
